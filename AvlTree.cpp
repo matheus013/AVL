@@ -17,16 +17,16 @@ void AvlTree::Clear(){
     root = 0;
 }
 
-bool AvlTree::Search(const string& key,int &value){
+bool AvlTree::Search(int &value){
 
     Node* current = root;
     while (current != 0){
 
-        if (key > current->getKey()){
+        if (value > current->getValue()){
             current = current->getSub(RIGHT);
         }
 
-        else if (key < current->getKey()){
+        else if (value < current->getValue()){
             current = current->getSub(LEFT);
         }
 
@@ -46,7 +46,7 @@ void AvlTree::rotateOnce(Node*& node, Direction dir){
     child->setSub(node->getSub(dir));
     node->setSub(child->getSub(opposite));
     child->setSub(node);
-    node = child;
+    node->setSub(child);
 }
 
 void AvlTree::rotateTwice(Node*& node, Direction dir){
@@ -153,40 +153,40 @@ void AvlTree::rebalanceRemove(Node*& node, Direction dir,bool& hChanged){
 }
 
 
-void AvlTree::Insert(const string& key, const int &value){
+void AvlTree::Insert( const int &value){
     //cout << key << endl;
     //cout << value << endl;
     bool hChanged = false;
-    this->insert(key, value, root, hChanged);
+    this->insert(value, root, hChanged);
 }
 
 
-void AvlTree::insert(const string key, const int value,Node* node, bool hChanged){
+void AvlTree::insert(const int value,Node* node, bool hChanged){
     if (node == 0){
-        node = new Node(key, value);
+        node = new Node(value);
         hChanged = true;
     }
 
-    else if (node->getKey() == key){
+    else if (node->getValue() == value){
         return;
     }
     else{
 
-        Direction dir = (key > node->getKey()) ? RIGHT : LEFT;
+        Direction dir = (value > node->getValue()) ? RIGHT : LEFT;
         hChanged = false;
-        insert(key, value,node->getSub(dir), hChanged);
+        insert(value,node->getSub(dir), hChanged);
         if (hChanged){
             rebalanceInsert(node, dir, hChanged);
         }
     }
 }
 
-bool AvlTree::Remove(const string &key){
+bool AvlTree::Remove(const int &value){
     bool hChanged = false;
-    return remove(key, root, hChanged);
+    return remove(value, root, hChanged);
 }
 
-bool AvlTree::remove(const string key, Node* node,bool hChanged){
+bool AvlTree::remove(const int value, Node* node,bool hChanged){
     bool success = false;
 
     if (node == 0){
@@ -195,14 +195,14 @@ bool AvlTree::remove(const string key, Node* node,bool hChanged){
     }
 
 
-    else if (key == node->getKey()){
+    else if (value == node->getValue()){
         if (node->getSub(LEFT) != 0 && node->getSub(RIGHT) != 0 ){
             Node* substitute = node->getSub(LEFT);
             while (substitute->getSub(RIGHT) != 0){
                 substitute = substitute->getSub(RIGHT);
             }
-            node->getKey()   = substitute->getKey();
-            success = remove(node->getKey(), node->getSub(LEFT), hChanged);
+            node->setValue(substitute->getValue());
+            success = remove(node->getValue(), node->getSub(LEFT), hChanged);
             if (hChanged){
                 rebalanceRemove(node, LEFT, hChanged);
             }
@@ -221,9 +221,9 @@ bool AvlTree::remove(const string key, Node* node,bool hChanged){
     }
 
     else{
-        Direction dir = (key > node->getKey()) ? RIGHT : LEFT;
+        Direction dir = (value > node->getValue()) ? RIGHT : LEFT;
         if (node->getSub(dir) != 0){
-            success = remove(key, node->getSub(dir), hChanged);
+            success = remove(value, node->getSub(dir), hChanged);
         }
 
         else{
@@ -241,16 +241,14 @@ bool AvlTree::remove(const string key, Node* node,bool hChanged){
 }
 
 void AvlTree::print(Node* root,int level){
-    cout << "test" << endl;
-    cout << root->getSub(RIGHT) << endl;
-
-    if(root->getSub(LEFT)!= 0){
-        print(root->getSub(LEFT), level +1);
+    if(root->getLeft()!= NULL){
+        print(root->getLeft(), level +1);
     }
     cout << qPrintable(QString("\t").repeated(level)) << "element=" << root->getValue() <<endl;
-    if(root->getSub(RIGHT)!= 0){
-        print(root->getSub(RIGHT),level +1);
+    if(root->getRight()!= NULL){
+        print(root->getRight(),level +1);
     }
+    cout << "test" << endl;
 
 }
 Node* AvlTree::getRoot(){

@@ -7,21 +7,26 @@ using namespace std;
 
  class Node{
 
-    Node* Subtree[2];
-    string Key;
-    int Value;
+    //Node* Subtree[2];
+    //string Key;
+    Node *left;
+    Node *right;
+    int value;
 
 public:
     unsigned short Balance;
-    Node(const string& key, const int& value);
+    Node(int value);
+    Node(int value, Node *l,Node *r);
     ~Node();
-
-    Node *getSub(int i);
+    Node* getLeft();
+    Node* getRight();
+    Node* getSub(int i);
     void setSub(Node *no);
-    string getKey();
-    void setKey(string str);
+    //string getKey();
+    //void setKey(string str);
     int getValue();
     void setValue(int value);
+    bool isEmpty();
 
 
 };
