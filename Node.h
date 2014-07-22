@@ -5,15 +5,17 @@
 
 using namespace std;
 
- class Node
-{
+ class Node{
+
     Node* Subtree[2];
     string Key;
     int Value;
+
 public:
     unsigned short Balance;
-    Node(const string& chave, const int& value);
+    Node(const string& key, const int& value);
     ~Node();
+
     Node *getSub(int i);
     void setSub(Node *no);
     string getKey();
@@ -23,4 +25,5 @@ public:
 
 
 };
+
 #endif // NODE_H

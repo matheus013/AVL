@@ -1,35 +1,36 @@
 #include "AvlTree.h"
 #include <iostream>
+#include <QString>
 
 using namespace std;
+
 AvlTree::AvlTree(){
-    this->root = NULL;
+    root = 0;
 }
 
 AvlTree::~AvlTree(){
-    this->Clear();
+    Clear();
 }
 
 void AvlTree::Clear(){
     delete root;
-    this->root = NULL;
+    root = 0;
 }
 
 bool AvlTree::Search(const string& key,int &value){
 
-    Node* current = this->root;
-    while (current != NULL){
+    Node* current = root;
+    while (current != 0){
 
-        if (key > current->getKey())
-        {
+        if (key > current->getKey()){
             current = current->getSub(RIGHT);
         }
-        else if (key < current->getKey())
-        {
+
+        else if (key < current->getKey()){
             current = current->getSub(LEFT);
         }
-        else
-        {
+
+        else{
             value = current->getValue();
             return true;
         }
@@ -39,16 +40,20 @@ bool AvlTree::Search(const string& key,int &value){
 }
 
 void AvlTree::rotateOnce(Node*& node, Direction dir){
+
     int opposite = this->opposite(dir);
-    Node* child = node->getSub(dir);
+    Node* child;
+    child->setSub(node->getSub(dir));
     node->setSub(child->getSub(opposite));
     child->setSub(node);
     node = child;
 }
 
 void AvlTree::rotateTwice(Node*& node, Direction dir){
+
     int opposite = this->opposite(dir);
     Node* child = node->getSub(dir)->getSub(opposite);
+
     node->getSub(dir)->getSub(opposite)->setSub(child->getSub(dir));
     child->getSub(dir)->setSub(node->getSub(dir));
     node->getSub(dir)->setSub(child);
@@ -59,8 +64,10 @@ void AvlTree::rotateTwice(Node*& node, Direction dir){
 }
 
 void AvlTree::updateBalance(Node* node, Direction dir){
+
     int opposite = this->opposite(dir);
     int bal = node->getSub(dir)->getSub(opposite)->Balance;
+
     if (bal == dir){
         node->Balance = OK;
         node->getSub(dir)->Balance = opposite;
@@ -70,6 +77,7 @@ void AvlTree::updateBalance(Node* node, Direction dir){
         node->Balance = dir;
         node->getSub(dir)->Balance = OK;
     }
+
     else{
         node->Balance = node->getSub(dir)->Balance = OK;
     }
@@ -78,7 +86,9 @@ void AvlTree::updateBalance(Node* node, Direction dir){
 }
 
 void AvlTree::rebalanceInsert(Node*& node, Direction dir,bool& hChanged){
+
     int opposite = this->opposite(dir);
+
     if (node->Balance == dir)    {
         if (node->getSub(dir)->Balance == dir)        {
             node->getSub(dir)->Balance = 2;
@@ -95,7 +105,7 @@ void AvlTree::rebalanceInsert(Node*& node, Direction dir,bool& hChanged){
 
 
     else if (node->Balance == opposite){
-        node->Balance = 2;
+        node->Balance = OK;
         hChanged = false;
     }
 
@@ -106,11 +116,11 @@ void AvlTree::rebalanceInsert(Node*& node, Direction dir,bool& hChanged){
 
 
 void AvlTree::rebalanceRemove(Node*& node, Direction dir,bool& hChanged){
+
     Direction opposite = this->opposite(dir);
     if (node->Balance == dir){
         node->Balance = OK;
     }
-
 
     else if (node->Balance == opposite){
 
@@ -120,11 +130,13 @@ void AvlTree::rebalanceRemove(Node*& node, Direction dir,bool& hChanged){
             node->Balance = OK;
             rotateOnce(node, opposite);
         }
+
         else if (node->getSub(opposite)->Balance == OK){
 
             node->getSub(opposite)->Balance = dir;
             rotateOnce(node, opposite);
         }
+
         else{
 
             updateBalance(node, opposite);
@@ -133,6 +145,7 @@ void AvlTree::rebalanceRemove(Node*& node, Direction dir,bool& hChanged){
 
         hChanged = false;
     }
+
     else{
         node->Balance = opposite;
         hChanged = false;
@@ -141,13 +154,15 @@ void AvlTree::rebalanceRemove(Node*& node, Direction dir,bool& hChanged){
 
 
 void AvlTree::Insert(const string& key, const int &value){
+    //cout << key << endl;
+    //cout << value << endl;
     bool hChanged = false;
-    this->insert(key, value, this->root, hChanged);
+    this->insert(key, value, root, hChanged);
 }
 
 
 void AvlTree::insert(const string key, const int value,Node* node, bool hChanged){
-    if (node == NULL){
+    if (node == 0){
         node = new Node(key, value);
         hChanged = true;
     }
@@ -168,22 +183,22 @@ void AvlTree::insert(const string key, const int value,Node* node, bool hChanged
 
 bool AvlTree::Remove(const string &key){
     bool hChanged = false;
-    return remove(key, this->root, hChanged);
+    return remove(key, root, hChanged);
 }
 
 bool AvlTree::remove(const string key, Node* node,bool hChanged){
     bool success = false;
-    if (node == NULL){
+
+    if (node == 0){
         hChanged = false;
         return false;
     }
 
 
     else if (key == node->getKey()){
-
-        if (node->getSub(LEFT) != NULL && node->getSub(RIGHT) != NULL ){
+        if (node->getSub(LEFT) != 0 && node->getSub(RIGHT) != 0 ){
             Node* substitute = node->getSub(LEFT);
-            while (substitute->getSub(RIGHT) != NULL){
+            while (substitute->getSub(RIGHT) != 0){
                 substitute = substitute->getSub(RIGHT);
             }
             node->getKey()   = substitute->getKey();
@@ -195,46 +210,53 @@ bool AvlTree::remove(const string key, Node* node,bool hChanged){
 
         else{
             Node* temp = node;
-            Direction dir = (node->getSub(LEFT) == NULL) ? RIGHT : LEFT;
+            Direction dir = (node->getSub(LEFT) == 0) ? RIGHT : LEFT;
             node = node->getSub(dir);
             temp->~Node();
             delete temp;
             hChanged = true;
         }
 
-
         return true;
     }
 
     else{
         Direction dir = (key > node->getKey()) ? RIGHT : LEFT;
-        if (node->getSub(dir) != NULL){
+        if (node->getSub(dir) != 0){
             success = remove(key, node->getSub(dir), hChanged);
         }
+
         else{
             hChanged = false;
             return false;
         }
+
         if (hChanged){
 
             this->rebalanceRemove(node, dir, hChanged);
         }
+
         return success;
     }
 }
 
-void AvlTree::Print(){
+void AvlTree::print(Node* root,int level){
+    cout << "test" << endl;
+    cout << root->getSub(RIGHT) << endl;
 
-    if (this->root != NULL){
+    if(root->getSub(LEFT)!= 0){
+        print(root->getSub(LEFT), level +1);
+    }
+    cout << qPrintable(QString("\t").repeated(level)) << "element=" << root->getValue() <<endl;
+    if(root->getSub(RIGHT)!= 0){
+        print(root->getSub(RIGHT),level +1);
+    }
 
-    }
-    else{
-        cout << "Arvore vazia" << endl;
-    }
+}
+Node* AvlTree::getRoot(){
+    return root;
 }
 
-
-inline Direction AvlTree::opposite(Direction dir)
-{
+inline Direction AvlTree::opposite(Direction dir){
     return (dir == RIGHT) ? LEFT : RIGHT;
 }

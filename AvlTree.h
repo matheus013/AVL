@@ -21,7 +21,8 @@ public:
     bool Remove(const string &key);
     bool Search(const string& key, int &value);
     void Clear();
-    void Print();
+    void print(Node *root, int level);
+    Node* getRoot();
 
 };
 
