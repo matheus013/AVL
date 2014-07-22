@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2014-07-18T16:58:36
+# Project created by QtCreator 2014-07-22T15:46:05
 #
 #-------------------------------------------------
 
@@ -8,18 +8,14 @@ QT       += core
 
 QT       -= gui
 
-TARGET = AVL
+TARGET = avl1
 CONFIG   += console
 CONFIG   -= app_bundle
 
 TEMPLATE = app
 
 
-SOURCES += main.cpp \
-    Node.cpp \
-    AvlTree.cpp
+SOURCES += main.cpp
 
 HEADERS += \
-    Node.h \
-    AvlTree.h \
-    Direction.h
+    avl.h
